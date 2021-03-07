@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, Paper, Switch, FormControlLabel } from "@material-ui/core";
 
-import { Link } from "react-router-dom";
 import "./LoginRegister.css";
 
 import axios from "axios";
@@ -16,7 +15,13 @@ class LoginRegister extends React.Component {
       credentials: {
         login_name: "",
         password: "",
+        first_name: "",
+        last_name: "",
+        description: "",
+        occupation: "",
+        location: "",
       },
+      errorMessage: "",
     };
 
     this.submitUserName = this.submitUserName.bind(this);
@@ -35,11 +40,21 @@ class LoginRegister extends React.Component {
     if (this.state.isRegistering) {
       endpoint = "/admin/register";
     }
-
-    axios.post(endpoint, this.state.credentials);
+    axios
+      .post(endpoint, this.state.credentials)
+      .then((res) => {
+        this.props.globalLogin(res.data);
+        //navigate to home page
+        this.props.history.push("/");
+      })
+      .catch((error) => {
+        this.setState({ errorMessage: "Login failed. Please try again." });
+      });
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    console.log(this.props);
+  }
 
   componentDidUpdate(prevState) {}
 
@@ -66,28 +81,56 @@ class LoginRegister extends React.Component {
                 onChange={this.updateState}
               />
             </label>
+
+            <Typography variant="body2">
+              {this.state.isRegistering ? "" : this.state.errorMessage}
+            </Typography>
             {this.state.isRegistering && (
               <React.Fragment>
                 <label>
                   First Name:
-                  <input type="text" name="first_name" />
+                  <input
+                    type="text"
+                    name="first_name"
+                    value={this.state.credentials.first_name}
+                    onChange={this.updateState}
+                  />
                 </label>
                 <label>
                   Last Name:
-                  <input type="text" name="last_name" />
+                  <input
+                    type="text"
+                    name="last_name"
+                    value={this.state.credentials.last_name}
+                    onChange={this.updateState}
+                  />
                 </label>
-
                 <label>
                   Location:
-                  <input type="text" name="location" />
+                  <input
+                    type="text"
+                    name="location"
+                    value={this.state.credentials.location}
+                    onChange={this.updateState}
+                  />
                 </label>
                 <label>
                   Description:
-                  <input type="text" name="description" />
+                  <input
+                    type="text"
+                    name="description"
+                    value={this.state.credentials.description}
+                    onChange={this.updateState}
+                  />
                 </label>
                 <label>
                   Occupation:
-                  <input type="text" name="occupation" />
+                  <input
+                    type="text"
+                    name="occupation"
+                    value={this.state.credentials.occupation}
+                    onChange={this.updateState}
+                  />
                 </label>
               </React.Fragment>
             )}

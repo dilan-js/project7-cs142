@@ -5,6 +5,7 @@ import {
   Typography,
   FormControlLabel,
   Switch,
+  Button,
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
@@ -63,12 +64,13 @@ class TopBar extends React.Component {
   render() {
     return (
       <AppBar className="cs142-topbar-appBar" position="absolute">
-        <Toolbar>
+        <Toolbar className="cs142-topbar-toolbar">
           <Link className="cs142-topBar-left-link" to="/" replace>
             <Typography className="cs142-topbar-nameTitle">
               {`Dilan Nana v${this.state.versionNumber}.0`}
             </Typography>
           </Link>
+
           <FormControlLabel
             label="Extra Credit"
             control={
@@ -80,12 +82,22 @@ class TopBar extends React.Component {
               ></Switch>
             }
           ></FormControlLabel>
-
+          <Typography className="cs142-topbar-loginTypography">
+            {this.props.user === null
+              ? "Please Login"
+              : `Hi ${this.props.user.first_name}!`}
+          </Typography>
+          <Button onClick={this.props.logOut} variant="contained">
+            Log Out
+          </Button>
           <Typography
             className="cs142-topBar-right"
             variant="h5"
             color="inherit"
           >
+            <Link to="/uploadPhoto">
+              <Button variant="contained">Upload Photo</Button>
+            </Link>
             {this.state.route === "photos" ? `Photos of ` : null}
             {this.state.route === "comments" ? `Comments by ` : null}
             {this.state.user && this.state.route !== ""

@@ -12,9 +12,9 @@ const photoController = {
       );
       delete photo.comments[j].user_id;
     }
-
     return photo;
   },
+
   async preparePhotos(photos) {
     for (var i = 0; i < photos.length; i++) {
       photos[i] = await this.preparePhoto(photos[i]);
@@ -33,6 +33,16 @@ const photoController = {
   async getAllCommentsByUser(userId) {
     var photos = await Photo.find().where("comments.user_id").equals(userId);
     return photos;
+  },
+  async addComment(photo_id, commentInfo) {
+    const foundPhoto = await Photo.findOne({ _id: photo_id });
+    if (foundPhoto) {
+      foundPhoto.comments.push(commentInfo);
+      await foundPhoto.save();
+      return foundPhoto;
+    } else {
+      return null;
+    }
   },
 };
 

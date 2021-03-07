@@ -5,7 +5,7 @@ const session = require("../middleware/session");
  * URL /getAllCommentsByUser/:id - Returns all comments by User (id)
  */
 router.get(
-  "/user/:id",
+  "/comment/user/:id",
   session.requiresLogin,
   async function (request, response) {
     var id = request.params.id;
@@ -13,7 +13,24 @@ router.get(
     if (photos === null) {
       response.status(400).json({ msg: "No comments found!" });
     }
-    response.status(200).json(photos);
+    response.json(photos);
+  }
+);
+
+router.post(
+  "/comment/commentsOfPhoto/:photo_id",
+  session.requiresLogin,
+  async function (request, response) {
+    const photo = await photoController.addComment(request.params.photo_id, {
+      comment: request.body.comment,
+      user_id: request.session.user._id,
+    });
+    if (photo === null) {
+      response
+        .status(400)
+        .json({ msg: "No photo found. Comment could not be added." });
+    }
+    response.json(await photoController.get(request.params.photo_id));
   }
 );
 

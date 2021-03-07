@@ -2,6 +2,7 @@ const User = require("../schema/user");
 const functions = require("../utils/globalFunctions");
 const Photo = require("../schema/photo");
 const bcrypt = require("bcrypt");
+
 const userController = {
   async all() {
     var userList = JSON.parse(JSON.stringify(await User.find()));
@@ -44,6 +45,20 @@ const userController = {
     } catch (error) {
       return false;
     }
+  },
+  async login(credentials) {
+    const user = await User.findOne({ login_name: credentials.login_name });
+    if (!user) {
+      return false;
+    }
+    const isPasswordCorrect = await bcrypt.compare(
+      credentials.password,
+      user.password
+    );
+    if (!isPasswordCorrect) {
+      return false;
+    }
+    return this.get(user._id);
   },
 };
 

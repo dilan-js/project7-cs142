@@ -1,6 +1,11 @@
 const router = require("express").Router();
 const session = require("../middleware/session");
 const photoController = require("../controllers/photoController");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+const uploadPath = path.join(__dirname, "../images/");
+var upload = multer({ dest: uploadPath });
 
 /*
  * This function cleans the photos so it's less verbose to handle in frontend
@@ -13,7 +18,7 @@ const photoController = require("../controllers/photoController");
  * URL /photosOfUser/:id - Return the Photos for User (id)
  */
 router.get(
-  "/user/:id",
+  "/photo/user/:id",
   session.parseUserId,
   session.requiresLogin,
   async function (request, response) {
@@ -32,7 +37,7 @@ router.get(
  * URL /getPhotoById/:photoId - Returns a specific photo by its id
  */
 router.get(
-  "/:photoId",
+  "/photo/:photoId",
   session.requiresLogin,
   async function (request, response) {
     let photoId = request.params.photoId;
@@ -42,6 +47,21 @@ router.get(
       return;
     }
     response.status(200).json(specificPhoto);
+  }
+);
+
+router.post(
+  "/photos/new",
+  upload.single("uploadedPhoto"),
+  async function (request, response) {
+    const fileEnding = request.file.mimetype.split("/");
+    const name = Date.now() + "." + fileEnding[1];
+    console.log(request.file);
+
+    fs.writeFileSync(uploadPath + name, request.file.filename, "utf8");
+    fs.unlinkSync(uploadPath + request.file.filename);
+    // const uploadedPhoto = await photoController.addPhoto();
+    console.log("success");
   }
 );
 

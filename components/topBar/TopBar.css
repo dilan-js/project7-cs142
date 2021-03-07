@@ -22,3 +22,12 @@
 .cs142-topBar-left-link {
   text-decoration: none;
 }
+
+.cs142-topbar-toolbar {
+  display: flex;
+}
+
+.cs142-topbar-loginTypography {
+  flex: 1;
+  text-align: center;
+}

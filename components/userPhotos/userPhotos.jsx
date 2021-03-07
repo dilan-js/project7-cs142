@@ -36,11 +36,13 @@ class UserPhotos extends React.Component {
         <div>
           {this.state.userPhotos.map((photo) => (
             <React.Fragment key={photo._id}>
-              <img
-                className="cs142-userPhotos-photo"
-                src={"/images/" + photo.file_name}
-                alt={photo.file_name}
-              ></img>
+              <Link to={`/photoDetailView/${photo._id}`}>
+                <img
+                  className="cs142-userPhotos-photo"
+                  src={"/images/" + photo.file_name}
+                  alt={photo.file_name}
+                ></img>
+              </Link>
               <Typography variant="h6">
                 Date & Time : {photo.date_time}
               </Typography>

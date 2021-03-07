@@ -65,9 +65,9 @@ app.use(express.static(__dirname));
 
 app.use("/user", routes.userRoutes);
 
-app.use("/photo", routes.photoRoutes);
+app.use(routes.photoRoutes);
 
-app.use("/comment", routes.commentRoutes);
+app.use(routes.commentRoutes);
 
 app.use("/admin", routes.adminRoutes);
 

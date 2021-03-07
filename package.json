@@ -8,7 +8,8 @@
     "build": "node_modules/.bin/webpack -d",
     "build:w": "node_modules/.bin/webpack -d --watch",
     "lint": "node_modules/.bin/eslint webServer.js loadDatabase.js *.jsx components/*/*.jsx lib/*.js",
-    "start": "concurrently \"npm build\" \"nodemon webServer.js\""
+    "start": "concurrently \"npm build\" \"nodemon webServer.js --ignore './compiled/'\""
+    
   },
   "author": "Mendel Rosenblum <mendel@cs.stanford.edu> ",
   "license": "ISC",
@@ -35,6 +36,7 @@
     "react-dom": "^16.5.2",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
+    "recoil": "^0.1.3",
     "url-loader": "^1.1.2"
   },
   "devDependencies": {
