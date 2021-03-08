@@ -9,16 +9,20 @@ const userController = require("../controllers/userController");
 /*
  * URL /user/list - Return all the User object.
  */
-router.get("/list", session.requiresLogin, async function (request, response) {
-  response.status(200).send(await userController.all());
-});
+router.get(
+  "/user/list",
+  session.requiresLogin,
+  async function (request, response) {
+    response.status(200).send(await userController.all());
+  }
+);
 
 /*
  * URL /user/getAllUserInfo - Return the respective number of comments
  * and photos associated with all users.
  */
 router.get(
-  "/getAllUserInfo",
+  "/user/getAllUserInfo",
   session.requiresLogin,
   async function (request, response) {
     const userContainer = await userController.all();
@@ -33,7 +37,7 @@ router.get(
  * URL /user/:id - Return the information for User (id)
  */
 router.get(
-  "/:id",
+  "/user/:id",
   session.requiresLogin,
   session.parseUserId,
   async function (request, response) {
@@ -49,5 +53,9 @@ router.get(
     response.status(200).json(user);
   }
 );
+
+// router.post("/user" async function(request, response){
+
+// })
 
 module.exports = router;

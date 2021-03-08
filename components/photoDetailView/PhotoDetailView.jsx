@@ -14,6 +14,7 @@ class PhotoDetailView extends React.Component {
     this.state = {
       userPhotos: [],
       addedComment: "",
+      errorMessage: "",
     };
     this.getPhotoById = this.getPhotoById.bind(this);
     this.addComment = this.addComment.bind(this);
@@ -31,12 +32,9 @@ class PhotoDetailView extends React.Component {
 
   updateState(e) {
     this.setState({ addedComment: e.target.value });
-    console.log(this.state.addedComment);
   }
 
   async addComment() {
-    console.log("add comment");
-    this.setState({ userPhotos: [] });
     try {
       const { data } = await axios.post(
         "/comment/commentsOfPhoto/" + this.props.match.params.photoId,
@@ -44,15 +42,10 @@ class PhotoDetailView extends React.Component {
           comment: this.state.addedComment,
         }
       );
-      console.log("HELOFOFGHKH");
+      this.setState({ errorMessage: "" });
       this.setState({ userPhotos: data });
-      // this.setState((prev) => {
-      //   prev[0].comments.push(data);
-      //   return prev;
-      // });
-      console.log("THIS ISI STATE: ", this.state.userPhotos);
     } catch (error) {
-      console.log(error);
+      this.setState({ errorMessage: error.response.data.msg });
     }
   }
 
@@ -86,6 +79,7 @@ class PhotoDetailView extends React.Component {
                 >
                   Add Comment
                 </Button>
+                <Typography>{this.state.errorMessage}</Typography>
                 {photo.comments ? (
                   photo.comments.map((comment) => (
                     <div key={comment._id}>

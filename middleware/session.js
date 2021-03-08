@@ -22,7 +22,6 @@ const sessionMiddleware = {
       request.user = request.session.user;
       next();
     } else {
-      console.log("LINE 26 request.session.js: ", request.session);
       response.status(401).json({ msg: "Unauthorized" }).end();
     }
   },

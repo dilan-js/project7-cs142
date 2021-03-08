@@ -44,6 +44,9 @@ const photoController = {
       return null;
     }
   },
+  async addPhoto(path, userId) {
+    return await Photo.create({ file_name: path, user_id: userId });
+  },
 };
 
 module.exports = photoController;

@@ -20,7 +20,14 @@ router.get(
 router.post(
   "/comment/commentsOfPhoto/:photo_id",
   session.requiresLogin,
-  async function (request, response) {
+  async function (request, response, next) {
+    if (request.body.comment.length === 0) {
+      response
+        .status(400)
+        .json({ msg: "No comment made. Please type in a comment." })
+        .end();
+      next();
+    }
     const photo = await photoController.addComment(request.params.photo_id, {
       comment: request.body.comment,
       user_id: request.session.user._id,

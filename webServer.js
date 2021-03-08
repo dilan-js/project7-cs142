@@ -63,7 +63,7 @@ mongoose.connect("mongodb://localhost/cs142project6", {
 // the work for us.
 app.use(express.static(__dirname));
 
-app.use("/user", routes.userRoutes);
+app.use(routes.userRoutes);
 
 app.use(routes.photoRoutes);
 

@@ -22,10 +22,12 @@ class PhotoShare extends React.Component {
     this.state = {
       extraCredit: true,
       user: null,
+      update: Date.now(),
     };
     this.handleExtraCreditToggle = this.handleExtraCreditToggle.bind(this);
     this.globalLogin = this.globalLogin.bind(this);
     this.globalLogout = this.globalLogout.bind(this);
+    this.updateAll = this.updateAll.bind(this);
   }
 
   handleExtraCreditToggle = (e) => {
@@ -33,28 +35,28 @@ class PhotoShare extends React.Component {
   };
 
   componentDidMount() {
-    if (localStorage.getItem("user") !== null) {
-      this.setState({ user: JSON.parse(localStorage.getItem("user")) });
+    if (sessionStorage.getItem("user") !== null) {
+      this.setState({ user: JSON.parse(sessionStorage.getItem("user")) });
     }
-    console.log(this.state.user);
   }
 
   globalLogin(user) {
-    localStorage.setItem("user", JSON.stringify(user));
+    sessionStorage.setItem("user", JSON.stringify(user));
     this.setState({ user: user });
   }
 
   async globalLogout() {
-    localStorage.clear();
-    console.log(localStorage);
+    this.setState({ user: null });
     try {
       await axios.post("/admin/logout");
-      this.setState({ user: null });
-      console.log("user user: ", this.state.user);
     } catch (error) {
       console.log(error);
     }
-    localStorage.clear();
+    sessionStorage.clear();
+  }
+
+  updateAll() {
+    this.setState({ update: Date.now() });
   }
 
   render() {
@@ -81,7 +83,11 @@ class PhotoShare extends React.Component {
               <React.Fragment>
                 <Grid item sm={3}>
                   <Paper className="cs142-main-grid-item">
-                    <UserList extraCredit={this.state.extraCredit} />
+                    <UserList
+                      extraCredit={this.state.extraCredit}
+                      logOut={this.globalLogout}
+                      update={this.state.update}
+                    />
                   </Paper>
                 </Grid>
                 <Grid item sm={9}>
@@ -106,10 +112,21 @@ class PhotoShare extends React.Component {
                             render={(props) => <PhotoDetailView {...props} />}
                           />
                           <Route exact path="/users" component={UserList} />
-                          <Route
+                          {/* <Route
                             exact
                             path="/uploadPhoto"
                             component={UploadPhoto}
+                            updateAll={this.updateAll}
+                          /> */}
+                          <Route
+                            exact
+                            path="/uploadPhoto"
+                            render={(props) => (
+                              <UploadPhoto
+                                {...props}
+                                updateAll={this.updateAll}
+                              />
+                            )}
                           />
                         </React.Fragment>
                       )}

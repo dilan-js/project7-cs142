@@ -11,7 +11,6 @@ router.post("/login", async function (request, response) {
     return response.status(401).json({ msg: "Login failed" });
   }
   session.assign(request.session, user);
-  console.log(request.session);
   response.json(user);
 });
 
@@ -28,18 +27,21 @@ router.post("/register", async function (request, response) {
 router.get("/test", session.requiresLogin, async function (request, response) {
   response.json({ msg: "YOOOOOOOOOOOOO" });
 });
-router.post("/logout", async function (request, response) {
+router.post("/logout", async function (request, response, next) {
   if (!request.session.user) {
     response.status(400).json({ msg: "Logout failed" }).end();
+    next();
+  } else {
+    //empty the session
+    request.session.destroy((err) => {
+      if (err) {
+        response.status(400).json({ msg: "Logout failed" }).end();
+        next();
+      } else {
+        response.json({ msg: "Successfully logged out." });
+      }
+    });
   }
-  //empty the session
-  request.session.destroy((err) => {
-    if (err) {
-      response.status(400).json({ msg: "Logout failed" }).end();
-    } else {
-      response.json({ msg: "Successfully logged out." });
-    }
-  });
 });
 
 module.exports = router;

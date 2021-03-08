@@ -22,16 +22,10 @@ class UserList extends React.Component {
   async retrievedUsers() {
     try {
       const { data } = await axios.get("/user/getAllUserInfo");
-      // const allCommentPhotoData = await axios.get("/user/getAllUserInfo");
-      // console.log("THIS IS DATA: ", allCommentPhotoData.data);
-      // data.forEach((user, i) => {
-      //   data[i].info = allCommentPhotoData.data.find(
-      //     (x) => x.userId === user._id
-      //   );
-      // });
       this.setState({ usersArray: data });
     } catch (error) {
       console.log(error);
+      this.props.logOut();
     }
   }
 
@@ -39,10 +33,11 @@ class UserList extends React.Component {
     this.retrievedUsers();
   }
 
-  // componentDidUpdate(prevState) {
-
-  //   this.retrievedUsers();
-  // }
+  componentDidUpdate(prevState) {
+    if (prevState.update !== this.props.update) {
+      this.retrievedUsers();
+    }
+  }
 
   render() {
     return (

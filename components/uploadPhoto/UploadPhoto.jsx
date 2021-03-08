@@ -11,6 +11,7 @@ class UploadPhoto extends React.Component {
     super(props);
     this.state = {
       uploadInput: null,
+      errorMessage: "",
     };
     this.handleUploadButtonClicked = this.handleUploadButtonClicked.bind(this);
   }
@@ -21,9 +22,13 @@ class UploadPhoto extends React.Component {
     const domForm = new FormData();
     domForm.append("uploadedPhoto", uploadedPhoto);
     try {
-      await axios.post("/photos/new", domForm);
+      this.setState({ errorMessage: "" });
+      const uploadedPhoto = await axios.post("/photos/new", domForm);
+      this.props.updateAll();
+      this.props.history.push("/photoDetailView/" + uploadedPhoto.data._id);
     } catch (error) {
       console.log(error);
+      this.setState({ errorMessage: error.response.data.msg });
     }
     // if (this.uploadInput.files.length > 0) {
     //   // Create a DOM form and add the file to it under the name uploadedphoto
@@ -41,6 +46,7 @@ class UploadPhoto extends React.Component {
           <form onSubmit={this.handleUploadButtonClicked}>
             <input type="file" accept="image/*" />
             <input type="submit" value="Upload!" />
+            <p>{this.state.errorMessage}</p>
           </form>
         </Paper>
       </React.Fragment>

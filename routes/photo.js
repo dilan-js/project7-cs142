@@ -50,18 +50,32 @@ router.get(
   }
 );
 
+//restrict the size??
 router.post(
   "/photos/new",
+  session.requiresLogin,
   upload.single("uploadedPhoto"),
-  async function (request, response) {
+  async function (request, response, next) {
+    if (!request.file) {
+      response.status(400).json({ msg: "No file uploaded!" });
+      next();
+    }
     const fileEnding = request.file.mimetype.split("/");
+    if (fileEnding[0] !== "image") {
+      response
+        .status(400)
+        .json({ msg: "The uploaded file is not an image. Try again" });
+    }
     const name = Date.now() + "." + fileEnding[1];
-    console.log(request.file);
 
-    fs.writeFileSync(uploadPath + name, request.file.filename, "utf8");
-    fs.unlinkSync(uploadPath + request.file.filename);
-    // const uploadedPhoto = await photoController.addPhoto();
-    console.log("success");
+    fs.renameSync(uploadPath + request.file.filename, uploadPath + name);
+    // fs.unlinkSync(uploadPath + request.file.filename);
+
+    const uploadedPhoto = await photoController.addPhoto(
+      name,
+      request.session.user._id
+    );
+    response.json(uploadedPhoto);
   }
 );
 
