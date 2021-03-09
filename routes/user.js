@@ -41,6 +41,7 @@ router.get(
   session.requiresLogin,
   session.parseUserId,
   async function (request, response) {
+    console.log("on user id");
     var user = await userController.get(request.params.id);
     if (user === null) {
       response
@@ -50,12 +51,24 @@ router.get(
         );
       return;
     }
+    delete user.login_name;
+    delete user.password;
     response.status(200).json(user);
   }
 );
 
-// router.post("/user" async function(request, response){
+router.post("/user", async function (request, response, next) {
+  const newUser = await userController.create(request.body);
+  if (!newUser) {
+    response
+      .status(400)
+      .json({ msg: "Registration could not be processed." })
+      .end();
+    next();
+  }
+  session.assign(request.session, newUser);
 
-// })
+  response.json(request.session.user);
+});
 
 module.exports = router;

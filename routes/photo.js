@@ -18,17 +18,18 @@ var upload = multer({ dest: uploadPath });
  * URL /photosOfUser/:id - Return the Photos for User (id)
  */
 router.get(
-  "/photo/user/:id",
-  session.parseUserId,
+  "/photosOfUser/:id",
   session.requiresLogin,
+  session.parseUserId,
   async function (request, response) {
     let id = request.userId;
     const photos = await photoController.byUser(id);
     //   photos = JSON.parse(JSON.stringify(photos));
     if (photos.length === 0) {
-      response.status(400).json({ msg: "Nothing found!" });
+      response.status(401).json("Nothing found!");
       return;
     }
+
     response.status(200).json(photos);
   }
 );

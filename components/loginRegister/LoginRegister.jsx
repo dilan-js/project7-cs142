@@ -38,7 +38,7 @@ class LoginRegister extends React.Component {
     e.preventDefault();
     let endpoint = "/admin/login";
     if (this.state.isRegistering) {
-      endpoint = "/admin/register";
+      endpoint = "/user";
     }
     axios
       .post(endpoint, this.state.credentials)
@@ -48,7 +48,8 @@ class LoginRegister extends React.Component {
         this.props.history.push("/");
       })
       .catch((error) => {
-        this.setState({ errorMessage: "Login failed. Please try again." });
+        console.log("THIS IS ERROR: ", error);
+        this.setState({ errorMessage: error.response.data.msg });
       });
   }
 

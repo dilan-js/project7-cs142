@@ -21,7 +21,7 @@ class UserPhotos extends React.Component {
 
   async getUserPhotos(userId) {
     try {
-      const { data } = await axios.get("/photo/user/" + userId);
+      const { data } = await axios.get("/photosOfUser/" + userId);
       this.setState({ userPhotos: data });
     } catch (error) {
       console.log(error);

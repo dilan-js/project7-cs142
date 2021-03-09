@@ -19,8 +19,13 @@ const functions = {
     delete user.location;
     delete user.description;
     delete user.occupation;
-
+    delete user.login_name;
+    delete user.password;
     return user;
+  },
+  userDetailCleaner(user) {
+    delete user.login_name;
+    delete user.password;
   },
 };
 

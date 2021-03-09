@@ -32,6 +32,7 @@ const userController = {
   },
   async get(userId) {
     var user = await User.findById(userId);
+    // console.log("FOUND USER");
     if (user !== null) {
       return functions.sanitizeData(user);
     }
@@ -39,23 +40,31 @@ const userController = {
   },
   async create(credentials) {
     try {
-      const saltPassword = await bcrypt.hash(credentials.password, 10);
-      credentials.password = saltPassword;
+      // const saltPassword = await bcrypt.hash(credentials.password, 10);
+      // credentials.password = saltPassword;
       return await User.create(credentials);
     } catch (error) {
       return false;
     }
   },
   async login(credentials) {
+    console.log("IN LOGIN");
     const user = await User.findOne({ login_name: credentials.login_name });
     if (!user) {
       return false;
     }
-    const isPasswordCorrect = await bcrypt.compare(
-      credentials.password,
-      user.password
-    );
+    console.log();
+    // const isPasswordCorrect = await bcrypt.compare(
+    //   credentials.password,
+    //   user.password
+    // );
+    var isPasswordCorrect = false;
+    if (credentials.password === user.password) {
+      isPasswordCorrect = true;
+    }
     if (!isPasswordCorrect) {
+      console.log("NO passwqord correct");
+
       return false;
     }
     return this.get(user._id);
